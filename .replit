@@ -1,0 +1,45 @@
+modules = ["nodejs-20"]
+[nix]
+channel = "stable-25_05"
+
+[agent]
+expertMode = true
+
+[userenv]
+
+[userenv.shared]
+
+run = "node index.js"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Start Server"
+mode = "sequential"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+waitForPort = 3000
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start Server"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["node", "index.js"]
